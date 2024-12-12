@@ -1,0 +1,52 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+class Product {
+    private String name;
+    private String price;
+    private String rating;
+    public Product(String name, String price, String rating) {
+        this.name = name;
+        this.price = price;
+        this.rating = rating;
+    }
+    @Override
+    public String toString() {
+        return name + "," + price + "," + rating;
+    }
+}
+public class ECommerceScraper {
+    public static void main(String[] args) {
+        String url = "https://example-ecommerce-website.com/products"; // Replace with a real URL
+        List<Product> products = new ArrayList<>();
+        try {
+            Document document = Jsoup.connect(url).get();
+            Elements productElements = document.select("div.product"); // Adjust selector based on website structure
+            for (Element productElement : productElements) {
+                String name = productElement.select("h2.product-name").text();
+                String price = productElement.select("span.product-price").text();
+                String rating = productElement.select("div.product-rating").text();
+                products.add(new Product(name, price, rating));
+            }
+            writeProductsToCSV(products);
+            System.out.println("Product information extracted and saved to products.csv");
+        } catch (IOException e) {
+            System.out.println("Error connecting to the website: " + e.getMessage());
+        }
+    }
+    private static void writeProductsToCSV(List<Product> products) {
+        try (FileWriter writer = new FileWriter("products.csv")) {
+            writer.write("Name,Price,Rating\n");
+            for (Product product : products) {
+                writer.write(product.toString() + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to CSV file: " + e.getMessage());
+        }
+    }
+}

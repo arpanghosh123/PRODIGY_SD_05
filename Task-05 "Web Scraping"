@@ -22,11 +22,11 @@ class Product {
 }
 public class ECommerceScraper {
     public static void main(String[] args) {
-        String url = "https://example-ecommerce-website.com/products"; // Replace with a real URL
+        String url = "https://example-ecommerce-website.com/products";
         List<Product> products = new ArrayList<>();
         try {
             Document document = Jsoup.connect(url).get();
-            Elements productElements = document.select("div.product"); // Adjust selector based on website structure
+            Elements productElements = document.select("div.product");
             for (Element productElement : productElements) {
                 String name = productElement.select("h2.product-name").text();
                 String price = productElement.select("span.product-price").text();
